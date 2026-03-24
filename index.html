@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>DECODER SYSTEM</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body {
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:black;
+  color:#00f0ff;
+  font-family:'Orbitron',sans-serif;
+  overflow:hidden;
+  position:relative;
+}
+
+canvas#matrix {
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:0;
+}
+
+.container {
+  position:relative;
+  z-index:1;
+  width:95%;
+  max-width:600px;
+  padding:30px;
+  background:rgba(0,10,20,0.9);
+  border:1px solid rgba(0,255,255,0.3);
+  border-radius:18px;
+  box-shadow:0 0 25px rgba(0,255,255,0.3);
+}
+
+h1 {
+  text-align:center;
+  margin-bottom:20px;
+  text-shadow:0 0 15px #00f0ff;
+}
+
+.panel {
+  border:1px solid rgba(0,255,255,0.2);
+  padding:15px;
+  border-radius:10px;
+  margin-top:15px;
+  background:rgba(0,0,0,0.6);
+  display:none;
+}
+
+input, button {
+  width:100%;
+  box-sizing:border-box;
+}
+
+input {
+  padding:12px;
+  margin:8px 0;
+  background:black;
+  border:1px solid rgba(0,255,255,0.4);
+  color:#00f0ff;
+  border-radius:6px;
+}
+
+button {
+  padding:12px;
+  margin-top:10px;
+  background:linear-gradient(90deg,#00f0ff,#00ffa6);
+  border:none;
+  color:black;
+  font-weight:bold;
+  cursor:pointer;
+  border-radius:8px;
+}
+
+button:hover {
+  box-shadow:0 0 15px #00f0ff;
+}
+
+.output {
+  margin-top:15px;
+  padding:15px;
+  min-height:70px;
+  background:black;
+  border:1px solid rgba(0,255,255,0.3);
+  border-radius:8px;
+  font-size:13px;
+  letter-spacing:1px;
+  white-space:pre-line;
+}
+
+.decoder-bar {
+  height:4px;
+  width:0%;
+  background:#00f0ff;
+  margin-top:10px;
+  animation:decode 1.2s linear forwards;
+}
+
+@keyframes decode {
+  from {width:0%;}
+  to {width:100%;}
+}
+
+.cursor {
+  display:inline-block;
+  width:8px;
+  background:#00f0ff;
+  margin-left:5px;
+  animation:blink 1s infinite;
+}
+
+@keyframes blink {
+  0%,50%,100%{opacity:1}
+  25%,75%{opacity:0}
+}
+
+.status {
+  font-size:10px;
+  opacity:0.6;
+  margin-top:10px;
+  display:flex;
+  justify-content:space-between;
+  display:none;
+}
+
+@media (max-width: 480px) {
+  .container {
+    width:95%;
+    padding:20px;
+  }
+  input {
+    font-size:16px;
+  }
+  button {
+    font-size:16px;
+  }
+}
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+
+<div class="container" id="container">
+  <h1>DinoMind</h1>
+
+  <div class="output" id="output">
+    <span id="greeting"></span>
+  </div>
+
+  <div class="panel" id="panel">
+    <button id="startBtn">SYSTEM STARTEN</button>
+  </div>
+
+  <div class="status" id="status">
+    <span>AI LINK: ACTIVE</span>
+    <span>SECURITY LVL: 5</span>
+  </div>
+</div>
+
+<script>
+let data = {};
+
+fetch('data.json')
+  .then(response => response.json())
+  .then(json => {
+    data = json;
+    console.log('Daten geladen:', data);
+  })
+  .catch(err => console.error('Fehler beim Laden der Daten:', err));
+
+let isTyping = false;
+let lastCoords = '';
+
+function typeText(text, elementId, callback) {
+  if(isTyping) return;
+  isTyping = true;
+  const output = document.getElementById(elementId);
+  output.innerHTML = "";
+  let i = 0;
+  function typing() {
+    if (i < text.length) {
+      output.innerHTML += text.charAt(i);
+      i++;
+      setTimeout(typing, 20);
+    } else {
+      output.innerHTML += '<span class="cursor"></span>';
+      isTyping = false;
+      if(callback) callback();
+    }
+  }
+  typing();
+}
+
+function showInputFields() {
+  const panel = document.getElementById('panel');
+  panel.innerHTML = '<input id="task" placeholder="NUMMER DER AUFGABE" autocomplete="off"><input id="code" placeholder="SCHLÜSSEL" autocomplete="off"><button onclick="checkCode()">DEKODIEREN</button><button id="copyBtn" style="margin-top:10px;">KOPIERE KOORDINATEN</button>';
+  document.getElementById('status').style.display = 'flex';
+  document.getElementById('copyBtn').addEventListener('click', () => {
+    if(lastCoords) {
+      navigator.clipboard.writeText(lastCoords);
+      // alert('Koordinaten kopiert: ' + lastCoords);
+    }
+  });
+}
+
+function checkCode() {
+  const task = document.getElementById("task").value.trim();
+  const code = document.getElementById("code").value.trim().toLowerCase();
+  if (!data[task]) { typeText("FEHLER: Unbekannte Aufgabennummer", 'output'); return; }
+  document.getElementById("output").innerHTML = "BERECHNE...";
+  const bar = document.createElement("div");
+  bar.className = "decoder-bar";
+  document.getElementById("output").appendChild(bar);
+  setTimeout(() => {
+    if (data[task].code === code) {
+      lastCoords = data[task].coords;
+      typeText("BERECHNUNG ERFOLGREICH >> " + lastCoords, 'output');
+    } else {
+      lastCoords = '';
+      typeText("BERECHNUNG FEHLGESCHLAGEN", 'output');
+    }
+  }, 1300);
+}
+
+// Matrix Hintergrund Animation
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+let cols = Math.floor(canvas.width / 20);
+let ypos = Array(cols).fill(0);
+function matrix() {
+  ctx.fillStyle = 'rgba(0,0,0,0.05)';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = '#00ff00';
+  ctx.font = '15pt monospace';
+  cols = Math.floor(canvas.width / 20);
+  if (ypos.length != cols) ypos = Array(cols).fill(0);
+  for(let i=0; i<ypos.length; i++){
+    const text = Math.random() > 0.5 ? '0' : '1';
+    ctx.fillText(text,i*20,ypos[i]*20);
+    if(ypos[i]*20 > canvas.height && Math.random() > 0.975) ypos[i]=0;
+    ypos[i]++;
+  }
+}
+setInterval(matrix,50);
+
+// Begrüßung anzeigen und auf Button warten
+typeText('HALLO!\nICH BIN DEIN PERSÖNLICHER ASSISTENT.\nICH KANN VERSTECKTE CODES ENTSCHLÜSSELN.', 'greeting', () => {
+  document.getElementById('panel').style.display = 'block';
+  const startBtn = document.getElementById('startBtn');
+  startBtn.addEventListener('click', showInputFields);
+});
+</script>
+</body>
+</html>
