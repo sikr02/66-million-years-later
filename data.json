@@ -1,15 +1,15 @@
 {
-  "0": { "code": "start", "coords": "N: 48.123 E: 11.566"},
-  "1": { "code": "keuper", "coords": "N: 48.123 E: 11.567" },
-  "2": { "code": "apfelstrudel", "coords": "N: 48.124 E: 11.568" },
-  "3": { "code": "rex", "coords": "N: 48.125 E: 11.569" },
-  "4": { "code": "tagcggtactagcttacg", "coords": "N: 48.123 E: 11.570" },
-  "5": { "code": "kreidezeit", "coords": "N: 48.123 E: 11.571" },
-  "6": { "code": "schrifttafel", "coords": "N: 48.123 E: 11.572" },
-  "7": { "code": "alpha", "coords": "N: 48.123 E: 11.573" },
-  "8": { "code": "spinosaurus", "coords": "N: 48.123 E: 11.574" },
-  "9": { "code": "ichtyosaurus", "coords": "N: 48.123 E: 11.575" },
-  "10": { "code": "ascii", "coords": "N: 48.123 E: 11.576" },
-  "11": { "code": "dinosaurier", "coords": "N: 48.123 E: 11.577" },
-  "12": { "code": "fossil", "coords": "N: 48.123 E: 11.578" }
+  "0": { "code": "start", "coords": "///hegt.badewanne.gedanke"},
+  "1": { "code": "dinosaurier", "coords": "///behauptet.gebläse.brüdern" },
+  "2": { "code": "keuper", "coords": "///kerzen.abriss.wohnhäuser" },
+  "3": { "code": "spinosaurus", "coords": "///sprüche.knickt.vergab" },
+  "4": { "code": "apfelstrudel", "coords": "///solcher.gewischt.werke" },
+  "5": { "code": "schrifttafel", "coords": "///widerstehen.zutreffen.beweisen" },
+  "6": { "code": "alpha", "coords": "///beim.scheune.argumenten" },
+  "7": { "code": "kreidezeit", "coords": "///geschlossene.festnetz.pflegt" },
+  "8": { "code": "tagcggtactagcttacg", "coords": "///anzeige.riegel.gern" },
+  "9": { "code": "rex", "coords": "///blende.beeindruckend.symbolisch" },
+  "10": { "code": "ascii", "coords": "///backofen.mildes.einfügen" },
+  "11": { "code": "ichtyosaurus", "coords": "///neongelb.aufführung.energien" },
+  "12": { "code": "fossil", "coords": "///dichterin.verein.gerechten" }
 }
